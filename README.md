@@ -6,7 +6,7 @@
 
 ### Clone Repository
 ```
-git clone https://github.com/ryanblanks/TimeTracker.git
+git clone https://github.com/matthewjmink/TimeTracker.git
 cd TimeTracker
 ```
 
