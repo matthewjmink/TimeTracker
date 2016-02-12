@@ -47,7 +47,9 @@ tt.controller("reportController",
     function($scope, $firebaseArray, $mdDialog, $interval, FBUrl) {
         var taskRef = new Firebase(FBUrl + "/Tasks");
         var trackersRef = new Firebase(FBUrl + "/Trackers");
+        var allocationsRef = new Firebase(FBUrl + "/Allocations");
         var trackerCollection = $firebaseArray(trackersRef);
+        var allocationsCollection = $firebaseArray(allocationsRef);
 
         $scope.days = {
             monday: moment().day("Monday").format('YYYYMMDD'),
@@ -102,11 +104,19 @@ tt.controller("reportController",
 
         function getProjectTotal(task) {
             var total = 0;
+            var allocation = 0;
             for (day in $scope.time) {
                 if($scope.time[day][task]){
                     total += $scope.time[day][task].hours || 0;
                 }
             }
+            this.projectTotal = total;
+            for (var i = 0; i < allocationsCollection.length; i++) {
+                if(allocationsCollection[i].task === this.task.task){
+                    allocation = allocationsCollection[i].hours;
+                }
+            }
+            this.projectVariance = this.projectTotal - allocation;
             return total;
         }
 

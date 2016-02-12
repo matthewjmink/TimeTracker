@@ -22,6 +22,9 @@
 .green{
     color: rgb(45, 180, 65);
 }
+.red{
+    color: rgb(214, 72, 72);
+}
 .runningTaskBackground{
       background-color: floralwhite;
 }

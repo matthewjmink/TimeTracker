@@ -73,7 +73,12 @@
                                 {{time[days.friday][task.task].hours || 0 | number: 2}}
                             </div>
                             <div class="data-cell" flex>
-                                <strong>{{getProjectTotal(task.task) | number: 2}}</strong>
+                                <strong>
+                                    {{getProjectTotal(task.task) | number: 2}}
+                                </strong> /
+                                <span ng-class="{red: projectVariance < 0 && task.task !== 'Admin' || projectVariance >= 0 && task.task === 'Admin', green: projectVariance >= 0 && task.task !== 'Admin' || projectVariance < 0 && task.task === 'Admin'}">
+                                    {{projectVariance | number: 2}}
+                                </span>
                             </div>
                         </div>
                     </div>
