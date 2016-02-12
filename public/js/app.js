@@ -56,6 +56,10 @@ tt.controller("reportController",
         $scope.getDayTotal = getDayTotal;
         $scope.getWeekTotal = getWeekTotal;
 
+        $scope.toggleNotes = function (){
+            this.notesVisible = !this.notesVisible;
+        };
+
         trackerCollection.$ref().orderByKey().startAt($scope.days.monday).endAt($scope.days.friday).on("child_added", function(snapshot) {
             var item = snapshot.val();
             var key = snapshot.key();
@@ -67,9 +71,17 @@ tt.controller("reportController",
                 var end   = moment(item[id].end);
                 var diff = end.diff(start, 'hours', true);
                 if(!$scope.time[key][item[id].task]){
-                    $scope.time[key][item[id].task] = diff;
+                    $scope.time[key][item[id].task] = {};
+                    $scope.time[key][item[id].task].hours = diff;
                 } else {
-                    $scope.time[key][item[id].task] += diff;
+                    $scope.time[key][item[id].task].hours += diff;
+                }
+                if(item[id].notes) {
+                    if(typeof $scope.time[key][item[id].task].notes === 'undefined') {
+                        $scope.time[key][item[id].task].notes = item[id].notes;
+                    } else {
+                        $scope.time[key][item[id].task].notes += ', ' + item[id].notes;
+                    }
                 }
             }
         });
@@ -77,7 +89,7 @@ tt.controller("reportController",
         function getDayTotal(day) {
             var total = 0;
             for (task in $scope.time[day]) {
-                total += $scope.time[day][task];
+                total += $scope.time[day][task].hours;
             }
             return total;
         }
@@ -85,7 +97,9 @@ tt.controller("reportController",
         function getProjectTotal(task) {
             var total = 0;
             for (day in $scope.time) {
-                total += $scope.time[day][task] || 0;
+                if($scope.time[day][task]){
+                    total += $scope.time[day][task].hours || 0;
+                }
             }
             return total;
         }
@@ -94,7 +108,7 @@ tt.controller("reportController",
             var total = 0;
             for (day in $scope.time) {
                 for (task in $scope.time[day]) {
-                    total += $scope.time[day][task];
+                    total += $scope.time[day][task].hours;
                 }
             }
             return total;
@@ -161,9 +175,8 @@ tt.controller("ttController",
                 var newStart = Date.create(moment(this.tracker.start).format('MM/DD/YYYY') + ' ' + this.editStart);
             }
             else {
-                var newStart = Date.create(moment(this.task.tracker.start).format('MM/DD/YYYY') + ' ' + this.editStart);
+                var newStart = Date.create(moment(this.editStartDate).format('MM/DD/YYYY') + ' ' + this.editStart);
             }
-            console.log(newStart);
             if ( Object.prototype.toString.call(newStart) === "[object Date]" ) {
                 if ( !isNaN( newStart.getTime() ) ) {
                     if (this.tracker) {
@@ -223,6 +236,7 @@ tt.controller("ttController",
             else {
                 var start = new Date(this.task.tracker.start);
             }
+            this.editStartDate = start;
             this.editStart = moment(start).format('h:mmA');
         };
 

@@ -1,125 +1,129 @@
-    <br />
-    <div layout="row" layout-sm="column" layout-xs="column">
-        <div flex="40" flex-sm="100" flex-xs="100">
-            <div layout="column" class="md-whiteframe-z1 tasks">
-                <md-toolbar class="md-theme-light">
-                    <h1 class="md-toolbar-tools">
-                        <span>Projects</span>
-                    </h1>
-                </md-toolbar>
-                <md-content>
-                    <md-list layout="column">
-                        <md-item ng-repeat="task in tasks | orderBy: 'task'" ng-init="initTaskEdits()">
-                            <md-item-content ng-class="{runningTaskBackground: task.running}">
-                                <div class="md-tile-content">
-                                    <div layout="row" layout-align="space-between center">
-                                        <div>
-                                            <h3 ng-click="startEdit()" ng-hide="inEdit">{{task.task}}</h3>
-                                            <md-input-container class="noBottomPadding" ng-show="inEdit">
-                                                <input aria-label="Project" ng-model="task.task" show-focus="inEdit" ng-blur="saveEdit()" />
+<div layout="row" layout-sm="column" layout-xs="column">
+    <div flex="40" flex-sm="100" flex-xs="100">
+        <div layout="column" class="md-whiteframe-z1 tasks">
+            <md-toolbar class="md-theme-light">
+                <h1 class="md-toolbar-tools">
+                    <span>Projects</span>
+                </h1>
+            </md-toolbar>
+            <md-content>
+                <md-list layout="column">
+                    <md-item ng-repeat="task in tasks | orderBy: 'task'" ng-init="initTaskEdits()">
+                        <md-item-content ng-class="{runningTaskBackground: task.running}">
+                            <div class="md-tile-content">
+                                <div layout="row" layout-align="space-between center">
+                                    <div>
+                                        <h3 ng-click="startEdit()" ng-hide="inEdit">{{task.task}}</h3>
+                                        <md-input-container class="noBottomPadding" ng-show="inEdit">
+                                            <input aria-label="Project" ng-model="task.task" show-focus="inEdit" ng-blur="saveEdit()" />
+                                        </md-input-container>
+                                        <h4 ng-show="task.running">
+                                            <span ng-hide="inEditStart" ng-click="startEditStart()">{{task.tracker.start | date:"h:mma"}}</span>
+                                            <md-datepicker ng-model="editStartDate" ng-show="inEditStart"></md-datepicker>
+                                            <md-input-container class="noBottomPadding" ng-show="inEditStart">
+                                                <input aria-label="Start Time" ng-model="editStart" >
                                             </md-input-container>
-                                            <h4 ng-show="task.running">
-                                                <span ng-hide="inEditStart" ng-click="startEditStart()">{{task.tracker.start | date:"h:mma"}}</span>
-                                                <md-input-container class="noBottomPadding" ng-show="inEditStart">
-                                                    <input aria-label="Start Time" ng-model="editStart" show-focus="inEditStart" ng-blur="saveEditStart(true)" />
-                                                </md-input-container>
+                                            <span ng-hide="inEditStart">
                                                 - <span class="green">{{runningElapsedTime}}</span>
-                                            </h4>
-                                        </div>
-                                        <div>
-                                            <md-button ng-disabled="task.running" ng-click="showConfirmTask($event, task)" class="md-warn md-icon-button md-mini" aria-label="Remove Task">
-                                                <i class="fa fa-trash-o"></i>
-                                            </md-button>
-                                            <md-button ng-hide="task.running" ng-click="startTracker(task)" class="md-raised md-primary md-fab md-mini" aria-label="Start Timer">
-                                                <i class="fa fa-clock-o"></i>
-                                            </md-button>
-                                            <md-button ng-show="task.running" ng-click="stopTracker(task)" class="md-raised md-accent md-fab md-mini" aria-label="Stop Timer">
-                                                <i class="fa fa-check"></i>
-                                            </md-button>
-                                        </div>
+                                            </span>
+                                        </h4>
+                                    </div>
+                                    <div>
+                                        <md-button ng-hide="inEditStart" ng-disabled="task.running" ng-click="showConfirmTask($event, task)" class="md-warn md-icon-button md-mini" aria-label="Remove Task">
+                                            <i class="fa fa-trash-o"></i>
+                                        </md-button>
+                                        <md-button ng-hide="task.running" ng-click="startTracker(task)" class="md-raised md-primary md-fab md-mini" aria-label="Start Timer">
+                                            <i class="fa fa-clock-o"></i>
+                                        </md-button>
+                                        <md-button ng-disabled="inEditStart || inEdit" ng-show="task.running && !inEditStart" ng-click="stopTracker(task)" class="md-raised md-accent md-fab md-mini" aria-label="Stop Timer">
+                                            <i class="fa fa-check"></i>
+                                        </md-button>
+                                        <md-button ng-show="inEditStart" ng-click="saveEditStart(true)" class="md-raised md-accent" aria-label="Update Start Time">
+                                            <i class="fa fa-clock-o"></i> Update Time
+                                        </md-button>
                                     </div>
                                 </div>
-                            </md-item-content>
-                            <md-divider></md-divider>
-                        </md-item>
-                    </md-list>
-                    <md-content class="md-padding">
-                        <md-input-container class="noBottomPadding">
-                            <label>New Task</label>
-                            <input aria-label="New Task" ng-model="addedTask" ng-keypress="keyPressed($event)"/>
-                        </md-input-container>
-                        <md-button ng-click="addTask()" class="md-raised md-primary" aria-label="Start Timer">Add</md-button>
-                    </md-content>
+                            </div>
+                        </md-item-content>
+                        <md-divider></md-divider>
+                    </md-item>
+                </md-list>
+                <md-content class="md-padding">
+                    <md-input-container class="noBottomPadding">
+                        <label>New Task</label>
+                        <input aria-label="New Task" ng-model="addedTask" ng-keypress="keyPressed($event)"/>
+                    </md-input-container>
+                    <md-button ng-click="addTask()" class="md-raised md-primary" aria-label="Start Timer">Add</md-button>
                 </md-content>
-            </div>
-            <br />
+            </md-content>
         </div>
-        <div flex="60" flex-sm="100" flex-xs="100">
-            <div layout="column" class="time md-whiteframe-z1">
-                <md-toolbar class="md-theme-light" layout="column">
-                    <div class="md-toolbar-tools">
-                        <span>Tracked Time -
-                            <span ng-if="!isToday">{{trackedDate | date: "MM/dd/yyyy"}}</span>
-                            <span ng-if="isToday">Today</span>
-                        </span>
-                    </div>
-                    <div layout="row" layout-align="space-between">
-                        <md-button aria-label="back" class="md-fab md-mini md-raised" ng-click="dateBack()"><i class="fa fa-chevron-left"></i></md-button>
-                        <md-button aria-label="today" ng-if="!isToday" class="md-raised" ng-click="dateToday()">Today</md-button>
-                        <md-button aria-label="forward" class="md-fab md-mini md-raised" ng-click="dateForward()"><i class="fa fa-chevron-right"></i></md-button>
-                    </div>
-                </md-toolbar>
-                <md-content>
-                    <md-subheader class="md-primary">Total: {{totalDayDuration()}}</md-subheader>
-                    <md-list layout="column">
-                        <md-item ng-repeat="tracker in trackers | filter: {end: '!undefined'} | orderBy: 'start'" ng-init="initTimeEdits()">
-                            <md-divider></md-divider>
-                            <md-item-content>
-                                <div class="md-tile-content">
-                                    <div layout="row" layout-align="space-between center">
-                                        <div>
-                                            <h3>{{tracker.task}}</h3>
-                                            <p>
-                                                <span ng-click="startEditNotes()" ng-hide="inEditNotes || !tracker.notes">
-                                                    <i class="fa fa-sticky-note-o"></i>
-                                                    {{tracker.notes}}
-                                                </span>
-                                                <md-input-container class="noBottomPadding" ng-show="inEditNotes">
-                                                    <label>Notes</label>
-                                                    <input aria-label="Notes" ng-model="tracker.notes" show-focus="inEditNotes" ng-keyup="updateEditNotes($event)" ng-blur="saveEditNotes()" />
-                                                </md-input-container>
-                                            </p>
-                                            <p class="muted">
-                                                <strong ng-hide="inEditStart" ng-click="startEditStart()">{{tracker.start | date:"h:mma"}}</strong>
-                                                <md-input-container class="noBottomPadding" ng-show="inEditStart">
-                                                    <input aria-label="Start Time" ng-model="editStart" show-focus="inEditStart" ng-blur="saveEditStart()" />
-                                                </md-input-container>
-                                                 to
-                                                <strong ng-hide="inEditEnd" ng-click="startEditEnd()">{{tracker.end | date:"h:mma"}}</strong>
-                                                <md-input-container class="noBottomPadding" ng-show="inEditEnd">
-                                                    <input aria-label="End Time" ng-model="editEnd" show-focus="inEditEnd" ng-blur="saveEditEnd()" />
-                                                </md-input-container>
-                                                <em> - {{elapsedTime(tracker)}}</em>
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <md-button ng-click="showConfirmTracker($event, tracker)" class="md-icon-button md-mini md-warn" aria-label="Remove">
-                                                <i class="fa fa-trash-o"></i>
-                                            </md-button>
-                                            <md-button ng-hide="inEditNotes" ng-click="startEditNotes($event, tracker)" class="md-raised md-fab md-mini md-primary" aria-label="Add notes">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </md-button>
-                                            <md-button ng-show="inEditNotes" class="md-raised md-accent md-fab md-mini" aria-label="Save notes">
-                                                <i class="fa fa-check"></i>
-                                            </md-button>
-                                        </div>
+        <br />
+    </div>
+    <div flex="60" flex-sm="100" flex-xs="100">
+        <div layout="column" class="time md-whiteframe-z1">
+            <md-toolbar class="md-theme-light" layout="column">
+                <div class="md-toolbar-tools">
+                    <span>Tracked Time -
+                        <span ng-if="!isToday">{{trackedDate | date: "MM/dd/yyyy"}}</span>
+                        <span ng-if="isToday">Today</span>
+                    </span>
+                </div>
+                <div layout="row" layout-align="space-between">
+                    <md-button aria-label="back" class="md-fab md-mini md-raised" ng-click="dateBack()"><i class="fa fa-chevron-left"></i></md-button>
+                    <md-button aria-label="today" ng-if="!isToday" class="md-raised" ng-click="dateToday()">Today</md-button>
+                    <md-button aria-label="forward" class="md-fab md-mini md-raised" ng-click="dateForward()"><i class="fa fa-chevron-right"></i></md-button>
+                </div>
+            </md-toolbar>
+            <md-content>
+                <md-subheader class="md-primary">Total: {{totalDayDuration()}}</md-subheader>
+                <md-list layout="column">
+                    <md-item ng-repeat="tracker in trackers | filter: {end: '!undefined'} | orderBy: 'start'" ng-init="initTimeEdits()">
+                        <md-divider></md-divider>
+                        <md-item-content>
+                            <div class="md-tile-content">
+                                <div layout="row" layout-align="space-between center">
+                                    <div>
+                                        <h3>{{tracker.task}}</h3>
+                                        <p>
+                                            <span ng-click="startEditNotes()" ng-hide="inEditNotes || !tracker.notes">
+                                                <i class="fa fa-sticky-note-o"></i>
+                                                {{tracker.notes}}
+                                            </span>
+                                            <md-input-container class="noBottomPadding" ng-show="inEditNotes">
+                                                <label>Notes</label>
+                                                <input aria-label="Notes" ng-model="tracker.notes" show-focus="inEditNotes" ng-keyup="updateEditNotes($event)" ng-blur="saveEditNotes()" />
+                                            </md-input-container>
+                                        </p>
+                                        <p class="muted">
+                                            <strong ng-hide="inEditStart" ng-click="startEditStart()">{{tracker.start | date:"h:mma"}}</strong>
+                                            <md-input-container class="noBottomPadding" ng-show="inEditStart">
+                                                <input aria-label="Start Time" ng-model="editStart" show-focus="inEditStart" ng-blur="saveEditStart()" />
+                                            </md-input-container>
+                                             to
+                                            <strong ng-hide="inEditEnd" ng-click="startEditEnd()">{{tracker.end | date:"h:mma"}}</strong>
+                                            <md-input-container class="noBottomPadding" ng-show="inEditEnd">
+                                                <input aria-label="End Time" ng-model="editEnd" show-focus="inEditEnd" ng-blur="saveEditEnd()" />
+                                            </md-input-container>
+                                            <em> - {{elapsedTime(tracker)}}</em>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <md-button ng-click="showConfirmTracker($event, tracker)" class="md-icon-button md-mini md-warn" aria-label="Remove">
+                                            <i class="fa fa-trash-o"></i>
+                                        </md-button>
+                                        <md-button ng-hide="inEditNotes" ng-click="startEditNotes($event, tracker)" class="md-raised md-fab md-mini md-primary" aria-label="Add notes">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </md-button>
+                                        <md-button ng-show="inEditNotes" class="md-raised md-accent md-fab md-mini" aria-label="Save notes">
+                                            <i class="fa fa-check"></i>
+                                        </md-button>
                                     </div>
                                 </div>
-                            </md-item-content>
-                        </md-item>
-                    </md-list>
-                </md-content>
-            </div>
-            <br />
+                            </div>
+                        </md-item-content>
+                    </md-item>
+                </md-list>
+            </md-content>
         </div>
     </div>
+</div>

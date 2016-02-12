@@ -21,6 +21,10 @@
 .summary {
     margin: 0 15px;
 }
+.md-whiteframe-z1 {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
 md-list .md-tile-content .layout-row {
     padding: 0 16px;
 }
@@ -42,20 +46,26 @@ md-toolbar.main-nav {
 .md-raised.md-primary.md-button:not([disabled]):hover {
     background-color: rgb(230, 105, 57);
 }
-.md-button.md-raised.md-accent,
-.md-button.md-fab.md-accent {
+.md-button.md-raised.md-accent:not([disabled]), .md-button.md-fab.md-accent:not([disabled]) {
     background-color: rgb(105, 202, 223);
 }
 .md-button.md-raised.md-accent:not([disabled]):hover,
 .md-button.md-fab.md-accent:not([disabled]):hover {
     background-color: rgb(102, 185, 204);
 }
-
+.project-notes md-input-container{
+  margin: -5px 0 0 0;
+  vertical-align: top;
+  padding-top: 0;
+}
 md-input-container .md-errors-spacer {
     float: none;
 }
 .data-cell {
   text-align: center;
+  vertical-align: top;
+  align-self: flex-start;
+  padding-top: 26px;
 }
 @media(max-width:559px){
   .tasks{
@@ -78,4 +88,13 @@ md-input-container .md-errors-spacer {
     max-width: 100%;
     margin: 16px;
   }
+}
+
+
+.tasks .md-button.md-datepicker-button {
+    margin: 0;
+    height: auto;
+    width: auto;
+    padding: 0;
+    line-height: 1;
 }

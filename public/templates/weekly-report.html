@@ -1,79 +1,114 @@
-    <br />
-    <div layout="column" class="summary md-whiteframe-z1">
-        <md-toolbar class="md-theme-light">
-            <h1 class="md-toolbar-tools" layout="row">
-                <div flex="25" flex-xs="100">Projects</div>
-                <div class="data-cell" flex>M</div>
-                <div class="data-cell" flex>T</div>
-                <div class="data-cell" flex>W</div>
-                <div class="data-cell" flex>Th</div>
-                <div class="data-cell" flex>F</div>
-                <div class="data-cell" flex>Total</div>
-            </h1>
-        </md-toolbar>
-        <md-content>
-            <md-list layout="column">
-                <md-item ng-repeat="task in tasks | orderBy: 'task'">
-                    <md-divider ng-if="!$first"></md-divider>
-                    <md-item-content>
-                        <div class="md-tile-content">
-                            <div class="data-row" layout="row" layout-align="space-between center">
-                                <div flex="25" flex-xs="100">
-                                    <h3>{{task.task}}</h3>
-                                </div>
-                                <div class="data-cell" flex>
-                                    {{time[days.monday][task.task] || 0 | number: 2}}
-                                </div>
-                                <div class="data-cell" flex>
-                                    {{time[days.tuesday][task.task] || 0 | number: 2}}
-                                </div>
-                                <div class="data-cell" flex>
-                                    {{time[days.wednesday][task.task] || 0 | number: 2}}
-                                </div>
-                                <div class="data-cell" flex>
-                                    {{time[days.thursday][task.task] || 0 | number: 2}}
-                                </div>
-                                <div class="data-cell" flex>
-                                    {{time[days.friday][task.task] || 0 | number: 2}}
-                                </div>
-                                <div class="data-cell" flex>
-                                    <strong>{{getProjectTotal(task.task) | number: 2}}</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </md-item-content>
-                </md-item>
-                <md-item>
-                    <md-divider ng-if="!$first"></md-divider>
-                    <md-item-content>
-                        <div class="md-tile-content">
-                            <div class="data-row" layout="row" layout-align="space-between center">
-                                <div flex="25" flex-xs="100">
-                                    <h3>Total</h3>
-                                </div>
-                                <div class="data-cell" flex>
-                                    <strong>{{getDayTotal(days.monday) | number: 2}}</strong>
-                                </div>
-                                <div class="data-cell" flex>
-                                    <strong>{{getDayTotal(days.tuesday) | number: 2}}</strong>
-                                </div>
-                                <div class="data-cell" flex>
-                                    <strong>{{getDayTotal(days.wednesday) | number: 2}}</strong>
-                                </div>
-                                <div class="data-cell" flex>
-                                    <strong>{{getDayTotal(days.thursday) | number: 2}}</strong>
-                                </div>
-                                <div class="data-cell" flex>
-                                    <strong>{{getDayTotal(days.friday) | number: 2}}</strong>
-                                </div>
-                                <div class="data-cell" flex>
-                                    <strong>{{getWeekTotal() | number: 2}}</strong>
+<div layout="column" class="summary md-whiteframe-z1">
+    <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools" layout="row">
+            <div flex="25" flex-xs="100">Projects</div>
+            <div class="data-cell" flex>M</div>
+            <div class="data-cell" flex>T</div>
+            <div class="data-cell" flex>W</div>
+            <div class="data-cell" flex>Th</div>
+            <div class="data-cell" flex>F</div>
+            <div class="data-cell" flex>Total</div>
+        </h1>
+    </md-toolbar>
+    <md-content>
+        <md-list layout="column">
+            <md-item ng-repeat="task in tasks | orderBy: 'task'">
+                <md-divider ng-if="!$first"></md-divider>
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <div class="data-row" layout="row" layout-align="space-between center">
+                            <div flex="25" flex-xs="100">
+                                <h3>
+                                    {{task.task}}
+                                    <md-button ng-click="toggleNotes()" class="md-icon-button md-mini" aria-label="Toggle Notes">
+                                        <i class="fa fa-sticky-note-o"></i>
+                                    </md-button>
+                                </h3>
+                                <div class="project-notes" ng-if="notesVisible">
+                                    <p>
+                                        <strong>M:</strong>
+                                        <md-input-container>
+                                            <textarea readonly aria-label="Notes" ng-model="time[days.monday][task.task].notes"></textarea>
+                                        </md-input-container>
+                                    </p>
+                                    <p>
+                                        <strong>T:</strong>
+                                        <md-input-container>
+                                            <textarea readonly aria-label="Notes" ng-model="time[days.tuesday][task.task].notes"></textarea>
+                                        </md-input-container>
+                                    </p>
+                                    <p>
+                                        <strong>W:</strong>
+                                        <md-input-container>
+                                            <textarea readonly aria-label="Notes" ng-model="time[days.wednesday][task.task].notes"></textarea>
+                                        </md-input-container>
+                                    </p>
+                                    <p>
+                                        <strong>Th:</strong>
+                                        <md-input-container>
+                                            <textarea readonly aria-label="Notes" ng-model="time[days.thursday][task.task].notes"></textarea>
+                                        </md-input-container>
+                                    </p>
+                                    <p>
+                                        <strong>F:</strong>
+                                        <md-input-container>
+                                            <textarea readonly aria-label="Notes" ng-model="time[days.friday][task.task].notes"></textarea>
+                                        </md-input-container>
+                                    </p>
                                 </div>
                             </div>
+                            <div class="data-cell" flex>
+                                {{time[days.monday][task.task].hours || 0 | number: 2}}
+                            </div>
+                            <div class="data-cell" flex>
+                                {{time[days.tuesday][task.task].hours || 0 | number: 2}}
+                            </div>
+                            <div class="data-cell" flex>
+                                {{time[days.wednesday][task.task].hours || 0 | number: 2}}
+                            </div>
+                            <div class="data-cell" flex>
+                                {{time[days.thursday][task.task].hours || 0 | number: 2}}
+                            </div>
+                            <div class="data-cell" flex>
+                                {{time[days.friday][task.task].hours || 0 | number: 2}}
+                            </div>
+                            <div class="data-cell" flex>
+                                <strong>{{getProjectTotal(task.task) | number: 2}}</strong>
+                            </div>
                         </div>
-                    </md-item-content>
-                </md-item>
-            </md-list>
-        </md-content>
-    </div>
-    <br />
+                    </div>
+                </md-item-content>
+            </md-item>
+            <md-item>
+                <md-divider ng-if="!$first"></md-divider>
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <div class="data-row" layout="row" layout-align="space-between center">
+                            <div flex="25" flex-xs="100">
+                                <h3>Total</h3>
+                            </div>
+                            <div class="data-cell" flex>
+                                <strong>{{getDayTotal(days.monday) | number: 2}}</strong>
+                            </div>
+                            <div class="data-cell" flex>
+                                <strong>{{getDayTotal(days.tuesday) | number: 2}}</strong>
+                            </div>
+                            <div class="data-cell" flex>
+                                <strong>{{getDayTotal(days.wednesday) | number: 2}}</strong>
+                            </div>
+                            <div class="data-cell" flex>
+                                <strong>{{getDayTotal(days.thursday) | number: 2}}</strong>
+                            </div>
+                            <div class="data-cell" flex>
+                                <strong>{{getDayTotal(days.friday) | number: 2}}</strong>
+                            </div>
+                            <div class="data-cell" flex>
+                                <strong>{{getWeekTotal() | number: 2}}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </md-item-content>
+            </md-item>
+        </md-list>
+    </md-content>
+</div>
