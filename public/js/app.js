@@ -235,6 +235,7 @@ tt.controller("ttController",
         };
 
         $scope.saveEditStart = function (runningTracker){
+            console.log(moment(this.tracker.start).format('MM/DD/YYYY'));
             if (this.tracker) {
                 var newStart = Date.create(moment(this.tracker.start).format('MM/DD/YYYY') + ' ' + this.editStart);
             }
@@ -262,7 +263,7 @@ tt.controller("ttController",
         };
 
         $scope.saveEditEnd = function (){
-            var newEnd = Date.create(moment(this.tracker.end).format('MM/DD/YYYY') + ' ' + this.editEnd);
+            var newEnd = Date.create(moment(this.tracker.start).format('MM/DD/YYYY') + ' ' + this.editEnd);
             if ( Object.prototype.toString.call(newEnd) === "[object Date]" ) {
                 if ( !isNaN( newEnd.getTime() ) ) {
                     this.tracker.end = newEnd.getTime();
@@ -331,7 +332,9 @@ tt.controller("ttController",
             console.log(targetDateString);
             var targetTrackers = $firebaseArray(new Firebase(FBUrl + "/Trackers/"+targetDateString));
             var tracker = task.tracker;
-            tracker.end = new Date().getTime();
+            var endDate = new Date();
+            endDate.setDate(targetDate.getDate());
+            tracker.end = endDate.getTime();
             targetTrackers.$add(tracker);
             task.running = false;
             task.tracker = null;
