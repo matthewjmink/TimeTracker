@@ -3,13 +3,19 @@ var tt = angular.module("TimeTracker", ["firebase", "ngMaterial", "ngRoute", "Ti
 tt.config(
     function($routeProvider) {
         $routeProvider
-            // route for the home page
+            // home page
             .when('/', {
                 templateUrl : 'templates/time-tracker.html',
                 controller    : 'ttController',
                 name: 'home'
             })
-            // route for the about page
+            // allocations page
+            .when('/allocations', {
+                templateUrl : 'templates/allocations.html',
+                controller    : 'allocationsController',
+                name: 'allocations'
+            })
+            // report page
             .when('/report', {
                 templateUrl : 'templates/weekly-report.html',
                 controller    : 'reportController',
@@ -112,6 +118,54 @@ tt.controller("reportController",
                 }
             }
             return total;
+        }
+
+    }
+);
+
+tt.controller("allocationsController",
+    function($scope, $firebaseArray, $mdDialog, $interval, FBUrl) {
+        var tasksRef = new Firebase(FBUrl + "/Tasks");
+        var allocationsRef = new Firebase(FBUrl + "/Allocations");
+        var defaultsSet = false;
+        $scope.tasks = $firebaseArray(tasksRef);
+        $scope.allocations = $firebaseArray(allocationsRef);
+        $scope.taskAllocations = {};
+
+        $scope.tasks.$loaded().then(function(list){
+            setDefaults(list);
+        });
+
+        $scope.allocations.$loaded().then(function(list){
+            setDefaults(list, true);
+        });
+
+        $scope.updateAllocation = function() {
+            var hours = $scope.taskAllocations[this.task.task].hours;
+            for (var i = 0; i < $scope.allocations.length; i++) {
+                if($scope.allocations[i].task === this.task.task){
+                    var key = $scope.allocations.$keyAt($scope.allocations[i]);
+                    var item = $scope.allocations.$getRecord(key);
+                    item.hours = hours;
+                    $scope.allocations.$save(item);
+                    return;
+                }
+            }
+            $scope.allocations.$add({
+                hours: hours,
+                task: this.task.task
+            });
+        }
+
+        function setDefaults(list, override) {
+            for (var i = 0; i < list.length; i++) {
+                if(!$scope.taskAllocations[list[i].task] || override){
+                    var value = override ? list[i].hours : 0;
+                    $scope.taskAllocations[list[i].task] = {
+                        hours: value
+                    };
+                }
+            }
         }
 
     }

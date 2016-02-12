@@ -9,6 +9,13 @@
   max-width: 750px;
   margin: auto;
 }
+.allocations{
+  max-width: 750px;
+  margin: auto;
+}
+.allocations .md-input {
+  text-align: center;
+}
 .noBottomPadding{
   padding-bottom: 0px;
 }

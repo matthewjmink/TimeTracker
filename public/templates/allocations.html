@@ -1,0 +1,28 @@
+<div layout="column" class="md-whiteframe-z1 allocations">
+    <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools">
+            <span>Allocations</span>
+        </h1>
+    </md-toolbar>
+    <md-content>
+        <md-list layout="column">
+            <md-item ng-repeat="task in tasks | orderBy: 'task'" >
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <div layout="row" layout-align="space-between center">
+                            <div flex="80">
+                                <h3>{{task.task}}</h3>
+                            </div>
+                            <div flex="20">
+                                <md-input-container class="noBottomPadding">
+                                    <input type="text" aria-label="Project Allocation" ng-model="taskAllocations[task.task].hours" ng-change="updateAllocation()">
+                                </md-input-container>
+                            </div>
+                        </div>
+                    </div>
+                </md-item-content>
+                <md-divider></md-divider>
+            </md-item>
+        </md-list>
+    </md-content>
+</div>
