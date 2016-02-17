@@ -1,3 +1,6 @@
+angular.module('TimeTracker.config', [])
+  .constant('FBUrl', 'https://mattminktimetracker.firebaseio.com');
+
 var tt = angular.module("TimeTracker", ["firebase", "ngMaterial", "ngRoute", "TimeTracker.config"]);
 
 tt.config(
