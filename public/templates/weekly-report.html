@@ -1,7 +1,7 @@
 <div layout="column" class="summary md-whiteframe-z1">
     <md-toolbar class="md-theme-light">
         <h1 class="md-toolbar-tools" layout="row">
-            <div flex="25" flex-xs="100">Projects</div>
+            <div flex="25" flex-xs="100">Projects (week of {{monday}})</div>
             <div class="data-cell" flex>M</div>
             <div class="data-cell" flex>T</div>
             <div class="data-cell" flex>W</div>
@@ -9,6 +9,11 @@
             <div class="data-cell" flex>F</div>
             <div class="data-cell" flex>Total</div>
         </h1>
+        <div layout="row" layout-align="space-between">
+            <md-button aria-label="back" class="md-fab md-mini md-raised" ng-click="previousWeek()"><i class="fa fa-chevron-left"></i></md-button>
+            <md-button aria-label="today" ng-if="!isToday" class="md-raised" ng-click="thisWeek()">Today</md-button>
+            <md-button aria-label="forward" class="md-fab md-mini md-raised" ng-click="nextWeek()"><i class="fa fa-chevron-right"></i></md-button>
+        </div>
     </md-toolbar>
     <md-content>
         <md-list layout="column">

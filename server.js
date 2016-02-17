@@ -12,4 +12,6 @@ controllers.init(app);
 
 var server = http.createServer(app);
 
-server.listen(1234);
+server.listen(process.env.PORT || 1234, function(){
+  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});

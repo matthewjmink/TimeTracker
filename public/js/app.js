@@ -51,48 +51,50 @@ tt.controller("reportController",
         var trackerCollection = $firebaseArray(trackersRef);
         var allocationsCollection = $firebaseArray(allocationsRef);
 
-        $scope.days = {
-            monday: moment().day("Monday").format('YYYYMMDD'),
-            tuesday: moment().day("Tuesday").format('YYYYMMDD'),
-            wednesday: moment().day("Wednesday").format('YYYYMMDD'),
-            thursday: moment().day("Thursday").format('YYYYMMDD'),
-            friday: moment().day("Friday").format('YYYYMMDD')
-        };
+        $scope.days = {};
         $scope.tasks = $firebaseArray(taskRef);
         $scope.time = {};
         $scope.getProjectTotal = getProjectTotal;
         $scope.getDayTotal = getDayTotal;
         $scope.getWeekTotal = getWeekTotal;
+        $scope.thisWeek = thisWeek;
+        $scope.nextWeek = nextWeek;
+        $scope.previousWeek = previousWeek;
+
+        setWeek();
 
         $scope.toggleNotes = function (){
             this.notesVisible = !this.notesVisible;
         };
 
-        trackerCollection.$ref().orderByKey().startAt($scope.days.monday).endAt($scope.days.friday).on("child_added", function(snapshot) {
-            var item = snapshot.val();
-            var key = snapshot.key();
-            if(!$scope.time[key]){
-                $scope.time[key] = {};
-            }
-            for (id in item) {
-                var start = moment(item[id].start);
-                var end   = moment(item[id].end);
-                var diff = end.diff(start, 'hours', true);
-                if(!$scope.time[key][item[id].task]){
-                    $scope.time[key][item[id].task] = {};
-                    $scope.time[key][item[id].task].hours = diff;
-                } else {
-                    $scope.time[key][item[id].task].hours += diff;
+        function getAllocations(){
+            $scope.time = {};
+            trackerCollection.$ref().orderByKey().startAt($scope.days.monday).endAt($scope.days.friday).on("child_added", function(snapshot) {
+                var item = snapshot.val();
+                var key = snapshot.key();
+                if(!$scope.time[key]){
+                    $scope.time[key] = {};
                 }
-                if(item[id].notes) {
-                    if(typeof $scope.time[key][item[id].task].notes === 'undefined') {
-                        $scope.time[key][item[id].task].notes = item[id].notes;
+                for (id in item) {
+                    var start = moment(item[id].start);
+                    var end   = moment(item[id].end);
+                    var diff = end.diff(start, 'hours', true);
+                    if(!$scope.time[key][item[id].task]){
+                        $scope.time[key][item[id].task] = {};
+                        $scope.time[key][item[id].task].hours = diff;
                     } else {
-                        $scope.time[key][item[id].task].notes += ', ' + item[id].notes;
+                        $scope.time[key][item[id].task].hours += diff;
+                    }
+                    if(item[id].notes) {
+                        if(typeof $scope.time[key][item[id].task].notes === 'undefined') {
+                            $scope.time[key][item[id].task].notes = item[id].notes;
+                        } else {
+                            $scope.time[key][item[id].task].notes += ', ' + item[id].notes;
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         function getDayTotal(day) {
             var total = 0;
@@ -128,6 +130,36 @@ tt.controller("reportController",
                 }
             }
             return total;
+        }
+
+        function nextWeek() {
+            setWeek('next');
+        }
+
+        function previousWeek() {
+            setWeek('previous');
+        }
+
+        function thisWeek() {
+            setWeek();
+        }
+
+        function setWeek(week) {
+            var monday = moment().day('Monday');
+            var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            $scope.days = {};
+            for (var i = 0; i < days.length; i++) {
+                var day = moment().day(days[i]);
+                if(week === 'previous') {
+                    day.subtract(1, 'weeks');
+                } else if(week === 'next') {
+                    day.add(1, 'weeks');
+                }
+                $scope.days[days[i].toLowerCase()] = day.format('YYYYMMDD');
+            }
+            $scope.isToday = $scope.days.monday === monday.format('YYYYMMDD');
+            $scope.monday = monday.format('M/D');
+            getAllocations();
         }
 
     }
@@ -235,7 +267,6 @@ tt.controller("ttController",
         };
 
         $scope.saveEditStart = function (runningTracker){
-            console.log(moment(this.tracker.start).format('MM/DD/YYYY'));
             if (this.tracker) {
                 var newStart = Date.create(moment(this.tracker.start).format('MM/DD/YYYY') + ' ' + this.editStart);
             }
