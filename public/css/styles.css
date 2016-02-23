@@ -13,7 +13,11 @@
   max-width: 750px;
   margin: auto;
 }
-.allocations .md-input {
+.allocations .total-row {
+  text-align: right;
+}
+.allocations .md-input,
+.allocations .total-cell {
   text-align: center;
 }
 .noBottomPadding{

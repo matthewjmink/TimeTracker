@@ -176,6 +176,7 @@ tt.controller("allocationsController",
         $scope.tasks = $firebaseArray(tasksRef);
         $scope.allocations = $firebaseArray(allocationsRef);
         $scope.taskAllocations = {};
+        $scope.totalAllocation = 0;
 
         $scope.tasks.$loaded().then(function(list){
             setDefaults(list);
@@ -187,6 +188,7 @@ tt.controller("allocationsController",
 
         $scope.updateAllocation = function() {
             var hours = $scope.taskAllocations[this.task.task].hours;
+            setTotalAllocation();
             for (var i = 0; i < $scope.allocations.length; i++) {
                 if($scope.allocations[i].task === this.task.task){
                     var key = $scope.allocations.$keyAt($scope.allocations[i]);
@@ -196,9 +198,12 @@ tt.controller("allocationsController",
                     return;
                 }
             }
-            $scope.allocations.$add({
-                hours: hours,
-                task: this.task.task
+        }
+
+        function setTotalAllocation () {
+            $scope.totalAllocation = 0;
+            angular.forEach($scope.taskAllocations, function(project) {
+                $scope.totalAllocation += project.hours;
             });
         }
 
@@ -210,6 +215,10 @@ tt.controller("allocationsController",
                         hours: value
                     };
                 }
+            }
+            console.log(override);
+            if(override){
+                setTotalAllocation();
             }
         }
 

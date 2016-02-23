@@ -15,8 +15,23 @@
                             </div>
                             <div flex="20">
                                 <md-input-container class="noBottomPadding">
-                                    <input type="text" aria-label="Project Allocation" ng-model="taskAllocations[task.task].hours" ng-change="updateAllocation()">
+                                    <input type="number" aria-label="Project Allocation" ng-model="taskAllocations[task.task].hours" ng-change="updateAllocation()">
                                 </md-input-container>
+                            </div>
+                        </div>
+                    </div>
+                </md-item-content>
+                <md-divider></md-divider>
+            </md-item>
+            <md-item>
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <div class="total-row" layout="row" layout-align="space-between center">
+                            <div flex="80">
+                                <h3>TOTAL</h3>
+                            </div>
+                            <div flex="20" class="total-cell">
+                                <strong>{{totalAllocation}}</strong>
                             </div>
                         </div>
                     </div>
